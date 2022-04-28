@@ -28,7 +28,6 @@ python ./ldsc/ldsc.py --h2 ./clean/scz.sumstats.gz --ref-ld-chr ./data/eur_w_ld_
 
 # Conversion to Liability Scale
 ## Breast cancer sample prevalence: 106571/(106571 + 95762) = 0.5267109
-python ./ldsc/ldsc.py --h2 ./clean/bc.sumstats.gz --ref-ld-chr ./data/eur_w_ld_chr/ --w-ld-chr ./data/eur_w_ld_chr/ --out ./clean/bc_h2_lia --samp-prev 0.5267109 --pop-prev 0.0026     # total population
-python ./ldsc/ldsc.py --h2 ./clean/bc.sumstats.gz --ref-ld-chr ./data/eur_w_ld_chr/ --w-ld-chr ./data/eur_w_ld_chr/ --out ./clean/bc_h2_lia_female --samp-prev 0.5267109 --pop-prev 0.0051     # female
+python ./ldsc/ldsc.py --h2 ./clean/bc.sumstats.gz --ref-ld-chr ./data/eur_w_ld_chr/ --w-ld-chr ./data/eur_w_ld_chr/ --out ./clean/bc_h2_lia_eur_fem --samp-prev 0.5267109 --pop-prev 0.0008     # Europe, female
 ## Schizophrenia sample prevalence: 35476/(35476 + 46839) = 0.4309786
-python ./ldsc/ldsc.py --h2 ./clean/scz.sumstats.gz --ref-ld-chr ./data/eur_w_ld_chr/ --w-ld-chr ./data/eur_w_ld_chr/ --out ./clean/scz_h2_lia --samp-prev 0.4309786 --pop-prev 0.0032
+python ./ldsc/ldsc.py --h2 ./clean/scz.sumstats.gz --ref-ld-chr ./data/eur_w_ld_chr/ --w-ld-chr ./data/eur_w_ld_chr/ --out ./clean/scz_h2_lia --samp-prev 0.4309786 --pop-prev 0.0034     # Europe
