@@ -1,0 +1,155 @@
+---
+title: "Coloc"
+author: "Zhengting (Johnathan) He"
+date: "5/16/2022"
+output: html_document
+---
+
+
+```{r "setup", include = FALSE}
+require("knitr")
+opts_chunk$set(warning = FALSE, message = FALSE, echo = TRUE, error = TRUE)
+opts_knit$set(root.dir = "D:/OneDrive - Johns Hopkins/Course/140.686.01 - Advanced Methods for Statistical Genetics and Genomics/assignment/homework_2/files")
+```
+
+
+```{r}
+require(coloc)
+require(tidyverse)
+
+setwd("D:/OneDrive - Johns Hopkins/Course/140.686.01 - Advanced Methods for Statistical Genetics and Genomics/assignment/homework_2/files")
+```
+
+
+# load dataset
+
+
+```{r}
+gwas_sum <- read.table("ISG15_protein_summary.txt", header = TRUE)
+eqtl_adipo <- read.table("ISG15_ciseQTL_Adipose_summary.txt", header = TRUE)
+eqtl_blood <- read.table("ISG15_ciseQTL_Blood_summary.txt", header = TRUE)
+```
+
+
+```{r}
+gwas_sum <- gwas_sum %>% 
+    mutate(type = "quant") %>% 
+    rename(pvalues = pval) %>%
+    separate(col = SNP,
+             into = c("Chr", "position", "allele_1", "allele_2"),
+             sep = ":")
+eqtl_adipo <- eqtl_adipo %>% 
+    mutate(type = "quant") %>% 
+    rename(pvalues = pval) %>%
+    separate(col = SNP,
+             into = c("Chr", "position", "allele_1", "allele_2"),
+             sep = ":")
+eqtl_blood <- eqtl_blood %>% 
+    mutate(type = "quant") %>% 
+    rename(pvalues = pval) %>%
+    separate(col = SNP,
+             into = c("Chr", "position", "allele_1", "allele_2"),
+             sep = ":")
+```
+
+
+```{r}
+head(gwas_sum)
+```
+
+
+```{r}
+head(eqtl_adipo)
+```
+
+
+```{r}
+head(eqtl_blood)
+```
+
+
+# check dataset
+
+
+```{r}
+check_dataset(gwas_sum, warn.minp = 1e-10)
+```
+
+
+```{r}
+check_dataset(eqtl_adipo, warn.minp = 1e-10)
+```
+
+
+```{r}
+check_dataset(eqtl_blood, warn.minp = 1e-10)
+```
+
+
+# colocalisation analysis - GWAS summary statistics and adipose tissues eQTL
+
+
+```{r}
+my.res <- coloc.abf(dataset1 = eqtl_adipo,
+                    dataset2 = gwas_sum)
+print(my.res)
+```
+
+
+```{r}
+subset(my.res$results, SNP.PP.H4 > 0.01)   # likely causal variant: SNP.PP.H4 > 0.01
+```
+
+
+```{r}
+o <- order(my.res$results$SNP.PP.H4, decreasing = TRUE)
+cs <- cumsum(my.res$results$SNP.PP.H4[o])
+w <- which(cs > 0.95)[1]
+my.res$results[o, ][1:w, ]$snp   # 95% credible set
+```
+
+
+```{r}
+gwas_sum[36,]
+eqtl_adipo[36,]
+```
+
+
+```{r}
+sensitivity(my.res, rule = "H4 > 0.5")   # sensitivity analysis
+```
+
+
+# colocalisation analysis - GWAS summary statistics and whole blood eQTL
+
+
+```{r}
+my.res2 <- coloc.abf(dataset1 = eqtl_blood,
+                     dataset2 = gwas_sum)
+print(my.res2)
+```
+
+
+```{r}
+subset(my.res2$results, SNP.PP.H4 > 0.01)   # likely causal variant: SNP.PP.H4 > 0.01
+```
+
+
+```{r}
+o <- order(my.res2$results$SNP.PP.H4, decreasing = TRUE)
+cs <- cumsum(my.res2$results$SNP.PP.H4[o])
+w <- which(cs > 0.95)[1]
+my.res2$results[o, ][1:w, ]$snp   # 95% credible set
+```
+
+
+```{r}
+gwas_sum[c(32,36),]
+eqtl_blood[c(32,36),]
+```
+
+
+```{r}
+sensitivity(my.res2, rule = "H4 > 0.5")   # sensitivity analysis
+```
+
